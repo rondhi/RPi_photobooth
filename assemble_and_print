@@ -1,9 +1,13 @@
 #!/bin/bash
-mogrify -resize 968x648 /home/pi/photobooth_images/*.jpg
-montage /home/pi/photobooth_images/*.jpg -tile 2x2 -geometry +10+10 /home/pi/temp_montage2.jpg
-montage /home/pi/temp_montage2.jpg /home/pi/photobooth_label.jpg -tile 2x1 -geometry +5+5 /home/pi/temp_montage3.jpg
-lp -d Canon_CP900 /home/pi/temp_montage3.jpg
-suffix=$(date +%H%M%S)
-cp /home/pi/temp_montage3.jpg /home/pi/PB_archive/PB_${suffix}.jpg
+
+cd /home/pi/
+mogrify -resize 570x380 /home/pi/photobooth_images/*.jpg
+montage /home/pi/photobooth_images/*.jpg -tile 1x4 -geometry +10+10 /home/pi/temp_montage2.jpg
+montage /home/pi/temp_montage2.jpg /home/pi/temp_montage2.jpg -tile 2x1 -geometry +5+5 /home/pi/temp_montage3.jpg
+montage /home/pi/temp_montage3.jpg /home/pi/photobooth_label.jpg -tile 1x2 -geometry +0+0 /home/pi/temp_montage4.jpg
+lp /home/pi/temp_montage4.jpg
+cp temp_montage4.jpg /home/pi/reprint.jpg
+suffix=$(date +%Y-%m-%d_%H%M%S)
+cp /home/pi/temp_montage4.jpg /home/pi/PB_archive/PB_${suffix}.jpg
 rm /home/pi/photobooth_images/*.jpg
 rm /home/pi/temp*
