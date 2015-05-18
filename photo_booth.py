@@ -63,7 +63,7 @@ while True:
                 gpout = subprocess.check_output("lp /home/pi/reprint.jpg", stderr=subprocess.STDOUT, shell=True)
                 print(gpout)
                 time.sleep(1)
-        #if (GPIO.input(RESET)):
-                #gpout = subprocess.check_output("sudo reboot", stderr=subprocess.STDOUT, shell=True)
-                #print(gpout)
-                #time.sleep(1)
+        if (GPIO.input(RESET)):
+                gpout = subprocess.check_output("sudo reboot", stderr=subprocess.STDOUT, shell=True)
+                print(gpout)
+                time.sleep(1)
