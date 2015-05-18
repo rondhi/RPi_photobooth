@@ -2,7 +2,7 @@
 
 import RPi.GPIO as GPIO, time, os, subprocess
 import os, sys
-import Image
+import datetime
 
 # GPIO setup
 GPIO.setmode(GPIO.BCM)
@@ -41,7 +41,8 @@ while True:
                                 time.sleep(0.1)
                         GPIO.output(POSE_LED, False)
                         print("SNAP")
-                        gpout = subprocess.check_output("gphoto2 --capture-image-and-download --filename /home/pi/photobooth_images/photobooth_%s_%Y-%m-%d-%H%M%S.jpg" % (snap), stderr=subprocess.STDOUT, shell=True)
+                        dt = str(datetime.datetime.now())
+                        gpout = subprocess.check_output("gphoto2 --capture-image-and-download --filename /home/pi/photobooth_images/photobooth_%s_%s.jpg" % (snap, dt), stderr=subprocess.STDOUT, shell=True)
                         print(gpout)
                         if "ERROR" not in gpout: 
                                 snap += 1
