@@ -10,8 +10,6 @@ SWITCH = 26
 GPIO.setup(SWITCH, GPIO.IN)
 REPRINT = 19
 GPIO.setup(REPRINT, GPIO.IN)
-RESET = 13
-GPIO.setup(RESET, GPIO.IN)
 PRINT_LED = 24
 POSE_LED = 18
 BUTTON_LED = 23
@@ -23,8 +21,8 @@ GPIO.output(PRINT_LED, False)
 
 while True:
         if (GPIO.input(SWITCH)):
-                snap = 0
-                while snap < 4:
+                snap = 1
+                while snap < 5:
                         print("pose!")
                         GPIO.output(BUTTON_LED, False)
                         GPIO.output(POSE_LED, True)
@@ -41,8 +39,10 @@ while True:
                                 time.sleep(0.1)
                         GPIO.output(POSE_LED, False)
                         print("SNAP")
-                        dt = str(datetime.datetime.now())
-                        gpout = subprocess.check_output("gphoto2 --capture-image-and-download --filename /home/pi/photobooth_images/photobooth_%s_%s.jpg" % (snap, dt), stderr=subprocess.STDOUT, shell=True)
+                        dt = str(time.strftime("%Y-%m-%d_%H%M%S"))
+                        last_photo_taken = "/home/pi/photobooth_images/snap_%s_%s.jpg" % (snap, dt)
+                        take_photo_command = "gphoto2 --capture-image-and-download --filename " + last_photo_taken
+                        gpout = subprocess.check_output(take_photo_command, stderr=subprocess.STDOUT, shell=True)
                         print(gpout)
                         if "ERROR" not in gpout: 
                                 snap += 1
@@ -52,7 +52,6 @@ while True:
                 GPIO.output(PRINT_LED, True)
                 # build image and send to printer
                 subprocess.call("sudo /home/pi/scripts/photobooth/assemble_and_print", shell=True)
-                # TODO: implement a reboot button
                 # Wait to ensure that print queue doesn't pile up
                 # TODO: check status of printer instead of using this arbitrary wait time
                 #time.sleep(110)
@@ -62,9 +61,5 @@ while True:
                 time.sleep(1)
         if (GPIO.input(REPRINT)):
                 gpout = subprocess.check_output("lp /home/pi/reprint.jpg", stderr=subprocess.STDOUT, shell=True)
-                print(gpout)
-                time.sleep(1)
-        if (GPIO.input(RESET)):
-                gpout = subprocess.check_output("sudo reboot", stderr=subprocess.STDOUT, shell=True)
                 print(gpout)
                 time.sleep(1)
