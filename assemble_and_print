@@ -28,9 +28,9 @@ lp /home/pi/temp_montage4.jpg
 #create copy of strip for reprint command
 cp temp_montage4.jpg /home/pi/reprint.jpg
 
-#archive strip
+#archive strip to flash drive
 suffix=$(date +%Y-%m-%d_%H%M%S)
-cp /home/pi/temp_montage4.jpg /home/pi/PB_archive/PB_${suffix}.jpg
+cp /home/pi/temp_montage4.jpg /home/pi/photobooth_backup/PB_archive/PB_${suffix}.jpg
 
 #cleanup
 rm /home/pi/photobooth_images/*.jpg
