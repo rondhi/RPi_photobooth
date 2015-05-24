@@ -6,13 +6,13 @@ import datetime
 
 # GPIO setup
 GPIO.setmode(GPIO.BCM)
-SWITCH = 26
+SWITCH = 12
 GPIO.setup(SWITCH, GPIO.IN)
-REPRINT = 19
+REPRINT = 16
 GPIO.setup(REPRINT, GPIO.IN)
-PRINT_LED = 24
-POSE_LED = 18
-BUTTON_LED = 23
+PRINT_LED = 18
+POSE_LED = 23
+BUTTON_LED = 19
 GPIO.setup(POSE_LED, GPIO.OUT)
 GPIO.setup(BUTTON_LED, GPIO.OUT)
 GPIO.setup(PRINT_LED, GPIO.OUT)
@@ -40,7 +40,7 @@ while True:
                         GPIO.output(POSE_LED, False)
                         print("SNAP")
                         dt = str(time.strftime("%Y-%m-%d_%H%M%S"))
-                        last_photo_taken = "/home/pi/photobooth_images/snap_%s_%s.jpg" % (snap, dt)
+                        last_photo_taken = "/home/pi/temp/snap_%s_%s.jpg" % (snap, dt)
                         take_photo_command = "gphoto2 --capture-image-and-download --filename " + last_photo_taken
                         gpout = subprocess.check_output(take_photo_command, stderr=subprocess.STDOUT, shell=True)
                         print(gpout)
