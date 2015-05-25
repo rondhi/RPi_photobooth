@@ -27,11 +27,11 @@ while True:
                         GPIO.output(BUTTON_LED, False)
                         GPIO.output(POSE_LED, True)
                         time.sleep(1)
-                        for i in range(1):
+                        for i in range(2):
                                 GPIO.output(POSE_LED, False)
-                                time.sleep(0.4)
+                                time.sleep(0.3)
                                 GPIO.output(POSE_LED, True)
-                                time.sleep(0.4)
+                                time.sleep(0.3)
                         for i in range(5):
                                 GPIO.output(POSE_LED, False)
                                 time.sleep(0.1)
