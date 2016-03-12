@@ -35,7 +35,7 @@ cp /home/pi/temp/temp_montage5.jpg /home/pi/reprint.jpg
 #upload photos to ShutterSnitch on iPad Mini
 for (( i = 1; i <= 4; i++))
 do
-	ncftpput -u snitch -p rondhi -P 26000 RondhiPadMini.lan / temp/${suffix}_snap_${i}*
+	ncftpput -u snitch -p ipadmini -P 26000 iPadMini.lan / temp/${suffix}_snap_${i}*
 	cp /home/pi/temp/${suffix}_snap_${i}* /home/pi/photobooth_backup/thumbnails/
 	cp /home/pi/temp/${suffix}_snap_${i}* /home/pi/upload/
 done
@@ -46,7 +46,7 @@ cp /home/pi/temp/temp_montage3.jpg /home/pi/upload/${suffix}_strip.jpg
 cp /home/pi/temp/temp_montage4.jpg /home/pi/photobooth_backup/PB_archive/${suffix}_strip.jpg
 cp /home/pi/temp/temp_montage5.jpg /home/pi/photobooth_backup/PB_archive/${suffix}_print.jpg
 mv /home/pi/temp/temp_montage3.jpg /home/pi/temp/${suffix}_strip.jpg
-ncftpput -u snitch -p rondhi -P 26000 RondhiPadMini.lan / temp/${suffix}_strip.jpg
+ncftpput -u snitch -p ipadmini -P 26000 iPadMini.lan /  temp/${suffix}_strip.jpg
 
 #run upload script in background
 sudo ./scripts/photobooth/upload &
