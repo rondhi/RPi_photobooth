@@ -1,0 +1,12 @@
+#!/bin/bash
+timestamp=$(cat /home/pi/timestamp)
+#upload photos to Google Drive
+for (( i = 1; i <= 4; i++))
+do
+	cp /home/pi/photobooth_backup/thumbnails/${timestamp}_snap_${i}* /home/pi/upload/
+        sudo python /home/pi/scripts/photobooth/upload.py upload/${timestamp}_snap_${i}*
+done
+cp /home/pi/photobooth_backup/PB_archive/${timestamp}_share.jpg upload/${timestamp}_strip.jpg
+sudo python /home/pi/scripts/photobooth/upload.py upload/${timestamp}_strip.jpg
+rm /home/pi/upload/*.jpg
+mv /home/pi/timestamp /home/pi/old.timestamp

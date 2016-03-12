@@ -2,25 +2,26 @@
 
 cd /home/pi/
 suffix=$(date +%Y-%m-%d_%H%M%S)
+echo ${suffix} > timestamp
 
 #copy originals into 64GB flash drive mounted to a directory in /home/pi/photobooth_backup
 for (( i = 1; i <= 4; i++))
 do
         mv temp/snap_${i}* temp/${suffix}_snap_${i}.jpg
-        cp temp/${suffix}_snap_${i}* /home/pi/photobooth_backup/photobooth_images/
+	cp temp/${suffix}_snap_${i}* /home/pi/photobooth_backup/photobooth_images/
 done
 
 #resize photos to 570x380
 mogrify -resize 570x380 /home/pi/temp/*.jpg
 
 #arrange four photos into vertical 1x4 table
-montage /home/pi/temp/*.jpg -tile 1x4 -geometry +10+10 /home/pi/temp/temp_montage2.jpg
+montage /home/pi/temp/*.jpg -tile 1x4 -geometry +15+10 /home/pi/temp/temp_montage2.jpg
 
 #add the photobooth logo under strip
 montage /home/pi/temp/temp_montage2.jpg /home/pi/photobooth_label.jpg -tile 1x2 -geometry +0+0 /home/pi/temp/temp_montage3.jpg
 
 #arrange strip into side by side copy
-montage /home/pi/temp/temp_montage3.jpg /home/pi/temp/temp_montage3.jpg -tile 2x1 -geometry +0+5 /home/pi/temp/temp_montage4.jpg
+montage /home/pi/temp/temp_montage3.jpg /home/pi/temp/temp_montage3.jpg -tile 2x1 -geometry +0+0 /home/pi/temp/temp_montage4.jpg
 
 #add white space to strip
 convert /home/pi/temp/temp_montage4.jpg -gravity center -extent 1272x1908 /home/pi/temp/temp_montage5.jpg
@@ -31,22 +32,24 @@ lp /home/pi/temp/temp_montage5.jpg
 #create copy of strip for reprint command
 cp /home/pi/temp/temp_montage5.jpg /home/pi/reprint.jpg
 
-#upload photos to Google Drive
+#upload photos to ShutterSnitch on iPad Mini
 for (( i = 1; i <= 4; i++))
 do
-        sudo python /home/pi/scripts/photobooth/upload.py temp/${suffix}_snap_${i}*
+	ncftpput -u snitch -p rondhi -P 26000 RondhiPadMini.lan / temp/${suffix}_snap_${i}*
+	cp /home/pi/temp/${suffix}_snap_${i}* /home/pi/photobooth_backup/thumbnails/
+	cp /home/pi/temp/${suffix}_snap_${i}* /home/pi/upload/
 done
 
 #archive strip
-cp /home/pi/temp/temp_montage3.jpg /home/pi/photobooth_backup/PB_archive/${suffix}_PB_share.jpg
-cp /home/pi/temp/temp_montage4.jpg /home/pi/photobooth_backup/PB_archive/${suffix}_PB_strip.jpg
-cp /home/pi/temp/temp_montage5.jpg /home/pi/photobooth_backup/PB_archive/${suffix}_PB_print.jpg
-cp /home/pi/temp/temp_montage3.jpg /home/pi/temp/${suffix}_PB_share.jpg
-cp /home/pi/temp/temp_montage4.jpg /home/pi/temp/${suffix}_PB_strip.jpg
-cp /home/pi/temp/temp_montage5.jpg /home/pi/temp/${suffix}_PB_print.jpg
-sudo python /home/pi/scripts/photobooth/upload.py temp/${suffix}_PB_share*
-sudo python /home/pi/scripts/photobooth/upload.py temp/${suffix}_PB_strip*
-sudo python /home/pi/scripts/photobooth/upload.py temp/${suffix}_PB_print*
+cp /home/pi/temp/temp_montage3.jpg /home/pi/photobooth_backup/PB_archive/${suffix}_share.jpg
+cp /home/pi/temp/temp_montage3.jpg /home/pi/upload/${suffix}_strip.jpg
+cp /home/pi/temp/temp_montage4.jpg /home/pi/photobooth_backup/PB_archive/${suffix}_strip.jpg
+cp /home/pi/temp/temp_montage5.jpg /home/pi/photobooth_backup/PB_archive/${suffix}_print.jpg
+mv /home/pi/temp/temp_montage3.jpg /home/pi/temp/${suffix}_strip.jpg
+ncftpput -u snitch -p rondhi -P 26000 RondhiPadMini.lan / temp/${suffix}_strip.jpg
+
+#run upload script in background
+sudo ./scripts/photobooth/upload &
 
 #cleanup
 rm /home/pi/temp/*.jpg
